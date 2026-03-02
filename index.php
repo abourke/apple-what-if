@@ -63,27 +63,27 @@ $app_data_json = json_encode([
 
         <!-- Currency switcher -->
         <div class="currency-wrapper">
-            <div class="currency-bar">
-                <button class="cur-btn active" data-cur="USD" onclick="setCurrency('USD')">🇺🇸 USD</button>
-                <button class="cur-btn"         data-cur="CAD" onclick="setCurrency('CAD')">🇨🇦 CAD</button>
-                <button class="cur-btn"         data-cur="GBP" onclick="setCurrency('GBP')">🇬🇧 GBP</button>
-                <button class="cur-btn"         data-cur="AUD" onclick="setCurrency('AUD')">🇦🇺 AUD</button>
+            <div class="currency-bar" role="group" aria-label="Select currency">
+                <button class="cur-btn active" data-cur="USD" onclick="setCurrency('USD')" aria-pressed="true"  aria-label="US Dollar">🇺🇸 USD</button>
+                <button class="cur-btn"         data-cur="CAD" onclick="setCurrency('CAD')" aria-pressed="false" aria-label="Canadian Dollar">🇨🇦 CAD</button>
+                <button class="cur-btn"         data-cur="GBP" onclick="setCurrency('GBP')" aria-pressed="false" aria-label="British Pound">🇬🇧 GBP</button>
+                <button class="cur-btn"         data-cur="AUD" onclick="setCurrency('AUD')" aria-pressed="false" aria-label="Australian Dollar">🇦🇺 AUD</button>
             </div>
-            <span id="rate-note">Fetching live rates…</span>
+            <span id="rate-note" aria-live="polite">Fetching live rates…</span>
         </div>
     </header>
 
     <!-- ── Products grid ───────────────────────────────────────────────────── -->
-    <div class="section-label" id="product-section-label">
+    <div class="section-label" id="product-section-label" aria-hidden="true">
         — Select a product · prices in $ (USD)
     </div>
-    <div class="products-grid" id="products-grid"></div>
+    <div class="products-grid" id="products-grid" role="list" aria-label="Apple products"></div>
 
     <!-- Custom calculator -->
-    <div class="custom-section">
+    <div class="custom-section" role="group" aria-label="Custom calculation">
         <div class="field-group">
             <label class="field-label" for="custom-year">Year</label>
-            <select class="field-input" id="custom-year">
+            <select class="field-input" id="custom-year" aria-label="Select purchase year">
                 <option value="">Select year…</option>
             </select>
         </div>
@@ -97,18 +97,19 @@ $app_data_json = json_encode([
                 id="custom-price"
                 placeholder="e.g. 499"
                 min="1"
+                aria-describedby="custom-price-label"
             >
         </div>
-        <button class="calc-btn" onclick="onCustomCalculate()">Calculate →</button>
+        <button class="calc-btn" onclick="onCustomCalculate()" aria-label="Calculate custom investment">Calculate →</button>
     </div>
 
     <!-- Loading indicator -->
-    <div class="loading" id="loading">
-        <span class="spinner"></span>CALCULATING YOUR ALTERNATE TIMELINE…
+    <div class="loading" id="loading" role="status" aria-live="polite" aria-label="Calculating">
+        <span class="spinner" aria-hidden="true"></span>CALCULATING YOUR ALTERNATE TIMELINE…
     </div>
 
     <!-- ── Result panel ─────────────────────────────────────────────────────── -->
-    <div id="result">
+    <div id="result" aria-live="polite" aria-atomic="true">
         <div class="result-header">
             <div class="result-product-name" id="r-product-name"></div>
             <div class="result-headline">
@@ -116,27 +117,31 @@ $app_data_json = json_encode([
                 would be worth
                 <span class="big-number" id="r-value"></span>
             </div>
+            <button class="share-btn" id="share-btn" onclick="onShareResult()" aria-label="Copy shareable link to clipboard">
+                <span class="share-icon" aria-hidden="true">↗</span>
+                <span class="share-label">Share</span>
+            </button>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-cell">
-                <div class="stat-label">Shares after splits</div>
-                <div class="stat-value" id="r-shares"></div>
+        <div class="stats-row" role="list" aria-label="Investment statistics">
+            <div class="stat-cell" role="listitem">
+                <div class="stat-label" id="label-shares">Shares after splits</div>
+                <div class="stat-value" id="r-shares" aria-labelledby="label-shares"></div>
             </div>
-            <div class="stat-cell">
-                <div class="stat-label">Shares incl. DRIP</div>
-                <div class="stat-value" id="r-shares-now"></div>
+            <div class="stat-cell" role="listitem">
+                <div class="stat-label" id="label-shares-now">Shares incl. DRIP</div>
+                <div class="stat-value" id="r-shares-now" aria-labelledby="label-shares-now"></div>
             </div>
-            <div class="stat-cell">
-                <div class="stat-label">Total return</div>
-                <div class="stat-value green" id="r-return"></div>
+            <div class="stat-cell" role="listitem">
+                <div class="stat-label" id="label-return">Total return</div>
+                <div class="stat-value green" id="r-return" aria-labelledby="label-return"></div>
             </div>
         </div>
 
-        <div class="luxuries-label">— Instead, you could have bought…</div>
-        <div class="luxuries-grid" id="luxuries-grid"></div>
+        <div class="luxuries-label" aria-hidden="true">— Instead, you could have bought…</div>
+        <div class="luxuries-grid" id="luxuries-grid" role="list" aria-label="What you could buy instead"></div>
 
-        <div class="disclaimer" id="disclaimer"></div>
+        <div class="disclaimer" id="disclaimer" role="note"></div>
     </div>
 
 </div><!-- /.container -->

@@ -74,7 +74,9 @@ export function updateRateNote(currencyCode, fxRates, source) {
  */
 export function activateCurrencyButton(currencyCode) {
     document.querySelectorAll('.cur-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.cur === currencyCode);
+        const isActive = btn.dataset.cur === currencyCode;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
 }
 
@@ -97,11 +99,12 @@ export function updateCurrencyLabels(currencyCode) {
 /**
  * Rebuild the products grid for the given currency.
  *
- * @param {string}   currencyCode
- * @param {object}   fxRates        — live rates, used as fallback for missing local prices
- * @param {function} onSelect       — callback(product) when a product is clicked
+ * @param {string}      currencyCode
+ * @param {object}      fxRates         — live rates, used as fallback for missing local prices
+ * @param {function}    onSelect        — callback(product) when a product is clicked
+ * @param {string|null} activeSlug      — slug of the currently selected product, if any
  */
-export function buildProductGrid(currencyCode, fxRates, onSelect) {
+export function buildProductGrid(currencyCode, fxRates, onSelect, activeSlug) {
     const grid = document.getElementById('products-grid');
     grid.innerHTML = '';
 
@@ -117,22 +120,39 @@ export function buildProductGrid(currencyCode, fxRates, onSelect) {
                 ? product.USD
                 : Math.round(product.USD * (fxRates[currencyCode] ?? 1));
 
+        const slug    = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        const isActive = slug === activeSlug;
+
         const btn = document.createElement('button');
-        btn.className = `product-btn${notAvailable ? ' unavailable' : ''}`;
+        btn.className = `product-btn${notAvailable ? ' unavailable' : ''}${isActive ? ' active' : ''}`;
         btn.dataset.productName = product.name;
+        btn.setAttribute('role', 'listitem');
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+
+        if (notAvailable) {
+            btn.setAttribute('aria-disabled', 'true');
+            btn.setAttribute('aria-label', `${product.name} (${product.year}) — not sold in this market at launch`);
+        } else {
+            btn.setAttribute('aria-label',
+                `${product.name}, ${product.year}, ${fmtLocal(localPrice, currencyCode)}`);
+        }
 
         btn.innerHTML = `
             <span class="p-name">${product.emoji} ${product.name}</span>
             <span class="p-year">${product.year}</span>
-            <span class="${notAvailable ? 'p-na' : 'p-price'}">
+            <span class="${notAvailable ? 'p-na' : 'p-price'}" aria-hidden="true">
                 ${notAvailable ? 'not sold here at launch' : fmtLocal(localPrice, currencyCode)}
             </span>
         `;
 
         if (!notAvailable) {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.product-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.product-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
                 onSelect({ ...product, localPrice, currency: currencyCode });
             });
         }

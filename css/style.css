@@ -508,6 +508,42 @@ h1 em {
     letter-spacing: 0.05em;
 }
 
+/* ── Share button ─────────────────────────────────────────────────────────── */
+.result-header {
+    position: relative;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--mid);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.share-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.share-btn.copied {
+    border-color: #4caf84;
+    color: #4caf84;
+}
+
+.share-icon {
+    font-size: 12px;
+}
+
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
 .disclaimer {
     font-family: 'DM Mono', monospace;
