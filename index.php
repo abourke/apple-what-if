@@ -23,6 +23,7 @@ $app_data_json = json_encode([
     'dividendSchedule' => $dividend_schedule,
     'quarterlyPrices'  => $quarterly_prices,
     'luxuries'         => $luxuries,
+    'everyday'         => $everyday,
 ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 ?>
 <!DOCTYPE html>
@@ -139,7 +140,7 @@ $app_data_json = json_encode([
         </div>
 
         <div class="luxuries-label" aria-hidden="true">— Instead, you could have bought…</div>
-        <div class="luxuries-grid" id="luxuries-grid" role="list" aria-label="What you could buy instead"></div>
+        <div class="luxuries-grid" id="luxuries-grid" role="list" aria-label="What you could buy instead — luxury and everyday items"></div>
 
         <div class="disclaimer" id="disclaimer" role="note"></div>
     </div>

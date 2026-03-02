@@ -5,7 +5,7 @@
  * never reads or writes global state directly.
  */
 
-import { CURRENCIES, products, luxuries } from './data.js';
+import { CURRENCIES, products, luxuries, everyday } from './data.js';
 
 // ── Formatting helpers ────────────────────────────────────────────────────────
 
@@ -214,39 +214,84 @@ export function renderResult(result) {
     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Luxuries ──────────────────────────────────────────────────────────────────
+// ── Luxuries + everyday items ─────────────────────────────────────────────────
 
 function renderLuxuries(valueLocal, currency, fxNow, sym) {
     const grid = document.getElementById('luxuries-grid');
     grid.innerHTML = '';
 
-    // Convert all luxury prices to the active currency
-    const localised = luxuries.map(l => ({
-        ...l,
-        localPrice: currency === 'USD' ? l.price : l.price * fxNow,
+    // Localise all items from both catalogues
+    const localise = items => items.map(item => ({
+        ...item,
+        localPrice: currency === 'USD' ? item.price : item.price * fxNow,
     }));
 
-    // Prefer items the user can buy at least one of; pad with cheapest if needed
-    const affordable = localised.filter(l => valueLocal >= l.localPrice);
-    let pool = affordable.length >= 9
-        ? affordable
-        : [...localised].sort((a, b) => a.localPrice - b.localPrice).slice(0, 12);
+    const allLuxury   = localise(luxuries);
+    const allEveryday = localise(everyday);
 
-    // Fisher-Yates shuffle for variety on each calculation
-    for (let i = pool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pool[i], pool[j]] = [pool[j], pool[i]];
+    // Sort each catalogue by price descending so shuffle picks variety
+    const sortDesc = arr => [...arr].sort((a, b) => b.localPrice - a.localPrice);
+
+    // From luxury: prefer items the user can afford at least one of
+    const affordableLuxury = sortDesc(allLuxury.filter(l => valueLocal >= l.localPrice));
+    // From everyday: always include — shows scale even for small portfolios
+    const affordableEveryday = sortDesc(allEveryday.filter(l => valueLocal >= l.localPrice));
+
+    // Fisher-Yates shuffle
+    const shuffle = arr => {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    };
+
+    // Build a pool of 9: up to 6 luxury + up to 3 everyday, or fill gaps
+    // with unaffordable items sorted cheapest-first for context
+    let luxPool     = shuffle(affordableLuxury).slice(0, 6);
+    let everydayPool = shuffle(affordableEveryday).slice(0, 3);
+
+    // If we don't have enough affordable luxury items, pad with cheapest unaffordable
+    if (luxPool.length < 6) {
+        const unaffordable = sortDesc(allLuxury.filter(l => valueLocal < l.localPrice)).reverse();
+        luxPool = [...luxPool, ...unaffordable].slice(0, 6);
     }
 
-    pool.slice(0, 9).forEach(lux => {
-        const count = Math.floor(valueLocal / lux.localPrice);
-        const card  = document.createElement('div');
+    // Same for everyday
+    if (everydayPool.length < 3) {
+        const unaffordable = sortDesc(allEveryday.filter(l => valueLocal < l.localPrice)).reverse();
+        everydayPool = [...everydayPool, ...unaffordable].slice(0, 3);
+    }
+
+    // Interleave: 2 luxury, 1 everyday, 2 luxury, 1 everyday, 2 luxury, 1 everyday
+    const pool = [
+        luxPool[0], luxPool[1], everydayPool[0],
+        luxPool[2], luxPool[3], everydayPool[1],
+        luxPool[4], luxPool[5], everydayPool[2],
+    ].filter(Boolean);
+
+    pool.forEach(item => {
+        const rawCount = valueLocal / item.localPrice;
+        // Format count: show one decimal for fractional, integer for whole numbers
+        // Never show a < symbol — show the actual fraction instead
+        let countDisplay;
+        if (rawCount >= 1) {
+            countDisplay = Math.floor(rawCount).toLocaleString() + '×';
+        } else {
+            countDisplay = rawCount.toFixed(2) + '×';
+        }
+
+        const card = document.createElement('div');
         card.className = 'luxury-card';
+        card.setAttribute('role', 'listitem');
+        card.setAttribute('aria-label',
+            `${countDisplay.replace('×', '')} ${item.name} at ${fmt(item.localPrice, sym)} each`);
         card.innerHTML = `
-            <span class="luxury-emoji">${lux.emoji}</span>
-            <div class="luxury-count">${count < 1 ? '<1' : count.toLocaleString()}×</div>
-            <div class="luxury-item">${lux.name}</div>
-            <div class="luxury-price">${fmt(lux.localPrice, sym)} each</div>
+            <span class="luxury-emoji" aria-hidden="true">${item.emoji}</span>
+            <div class="luxury-count" aria-hidden="true">${countDisplay}</div>
+            <div class="luxury-item">${item.name}</div>
+            <div class="luxury-price">${fmt(item.localPrice, sym)} each</div>
         `;
         grid.appendChild(card);
     });

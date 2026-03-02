@@ -24,6 +24,7 @@ export const {
     dividendSchedule,
     quarterlyPrices,
     luxuries,
+    everyday,
 } = window.APP_DATA;
 
 export const CURRENCIES = {

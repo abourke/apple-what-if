@@ -75,3 +75,60 @@ $luxuries = [
     ['name' => 'Steinway Model D concert grand',     'price' => 180000,    'emoji' => '🎹'],
     ['name' => 'Hollywood Hills home studio',        'price' => 3000000,   'emoji' => '🎙️'],
 ];
+
+/**
+ * Everyday consumer items catalogue.
+ * Prices in USD; converted to local currency at display time.
+ * Included in the "what you could buy instead" pool alongside luxury items,
+ * providing relatable scale for smaller investment results.
+ */
+$everyday = [
+    // Food & drink
+    ['name' => 'Big Mac',                            'price' => 5.29,      'emoji' => '🍔'],
+    ['name' => 'Starbucks latte',                    'price' => 7.00,      'emoji' => '☕'],
+    ['name' => 'Dozen eggs',                         'price' => 4.50,      'emoji' => '🥚'],
+    ['name' => 'Loaf of bread',                      'price' => 4.00,      'emoji' => '🍞'],
+    ['name' => 'Litre of milk',                      'price' => 1.50,      'emoji' => '🥛'],
+    ['name' => 'Avocado toast (café)',               'price' => 14.00,     'emoji' => '🥑'],
+    ['name' => 'Large pizza (delivery)',             'price' => 22.00,     'emoji' => '🍕'],
+    ['name' => 'Case of beer (24)',                  'price' => 28.00,     'emoji' => '🍺'],
+    ['name' => 'Bottle of decent wine',              'price' => 20.00,     'emoji' => '🍷'],
+    ['name' => 'Weekly groceries (1 person)',        'price' => 100.00,    'emoji' => '🛒'],
+    ['name' => 'Restaurant dinner for two',         'price' => 120.00,    'emoji' => '🍽️'],
+
+    // Subscriptions & services
+    ['name' => 'Netflix (month)',                    'price' => 22.99,     'emoji' => '📺'],
+    ['name' => 'Spotify (month)',                    'price' => 11.99,     'emoji' => '🎵'],
+    ['name' => 'iCloud 2TB (month)',                 'price' => 9.99,      'emoji' => '☁️'],
+    ['name' => 'NY Times subscription (year)',       'price' => 119.00,    'emoji' => '📰'],
+    ['name' => 'Amazon Prime (year)',                'price' => 139.00,    'emoji' => '📦'],
+    ['name' => 'Gym membership (month)',             'price' => 50.00,     'emoji' => '🏋️'],
+
+    // Household
+    ['name' => 'Roll of paper towels (12pk)',       'price' => 22.00,     'emoji' => '🧻'],
+    ['name' => 'Tide Pods (81ct)',                   'price' => 22.00,     'emoji' => '🧺'],
+    ['name' => 'IKEA Billy bookcase',               'price' => 79.00,     'emoji' => '📚'],
+    ['name' => 'Dyson V8 vacuum',                   'price' => 350.00,    'emoji' => '🧹'],
+    ['name' => 'KitchenAid stand mixer',            'price' => 450.00,    'emoji' => '🍰'],
+    ['name' => 'Le Creuset dutch oven',             'price' => 420.00,    'emoji' => '🍲'],
+    ['name' => 'Instant Pot (8qt)',                  'price' => 100.00,    'emoji' => '🥘'],
+    ['name' => 'Nespresso machine',                 'price' => 180.00,    'emoji' => '☕'],
+
+    // Transport
+    ['name' => 'Tank of gas (50L)',                  'price' => 65.00,     'emoji' => '⛽'],
+    ['name' => 'Monthly transit pass',               'price' => 100.00,    'emoji' => '🚌'],
+    ['name' => 'Uber across town',                   'price' => 18.00,     'emoji' => '🚗'],
+    ['name' => 'Economy flight (domestic)',          'price' => 280.00,    'emoji' => '✈️'],
+
+    // Health & personal
+    ['name' => 'Prescription (30-day supply)',      'price' => 30.00,     'emoji' => '💊'],
+    ['name' => 'Haircut',                            'price' => 35.00,     'emoji' => '💈'],
+    ['name' => 'Massage (60 min)',                   'price' => 90.00,     'emoji' => '💆'],
+
+    // Entertainment
+    ['name' => 'Movie ticket',                       'price' => 15.00,     'emoji' => '🎬'],
+    ['name' => 'Paperback novel',                    'price' => 18.00,     'emoji' => '📖'],
+    ['name' => 'Video game (new release)',           'price' => 79.99,     'emoji' => '🎮'],
+    ['name' => 'Concert ticket (mid-tier)',          'price' => 150.00,    'emoji' => '🎤'],
+];
+
