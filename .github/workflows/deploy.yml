@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Deploy via SFTP
-        uses: pressable/github-action-sftp-upload@v1
+        uses: wangyucode/sftp-upload-action@v2.0.2
         with:
           host: ${{ secrets.SFTP_HOST }}
           username: ${{ secrets.SFTP_USERNAME }}
