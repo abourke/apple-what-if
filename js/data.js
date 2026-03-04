@@ -25,6 +25,8 @@ export const {
     quarterlyPrices,
     luxuries,
     everyday,
+    aaplPriceUSD,
+    aaplPriceDate,
 } = window.APP_DATA;
 
 export const CURRENCIES = {

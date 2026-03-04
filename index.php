@@ -15,6 +15,7 @@ require_once __DIR__ . '/includes/products.php';
 require_once __DIR__ . '/includes/historical.php';
 require_once __DIR__ . '/includes/dividends.php';
 require_once __DIR__ . '/includes/luxuries.php';
+require_once __DIR__ . '/includes/aapl.php';
 
 // Encode all PHP data as JSON for the JS data bridge
 $app_data_json = json_encode([
@@ -24,6 +25,8 @@ $app_data_json = json_encode([
     'quarterlyPrices'  => $quarterly_prices,
     'luxuries'         => $luxuries,
     'everyday'         => $everyday,
+    'aaplPriceUSD'     => $aapl['price'],
+    'aaplPriceDate'    => $aapl['date'],
 ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 ?>
 <!DOCTYPE html>

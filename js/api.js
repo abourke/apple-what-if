@@ -1,40 +1,17 @@
 /**
  * api.js — live data fetching.
  *
- * Fetches AAPL last-close price from Yahoo Finance and current FX rates
- * from Frankfurter (European Central Bank feed). Both endpoints are
- * CORS-open and require no API key.
+ * AAPL price is fetched server-side by PHP (includes/aapl.php) and injected
+ * into APP_DATA at render time, avoiding CORS restrictions entirely.
  *
- * Exports a single initialise() function that resolves with the live
- * data, falling back to hardcoded values if either endpoint is down.
+ * This module only fetches live FX rates from Frankfurter (ECB data),
+ * which is CORS-open and does not require an API key.
  */
 
-const FALLBACK_AAPL_USD  = 264.18;
-const FALLBACK_AAPL_DATE = 'Feb 27, 2026 (cached)';
+import { aaplPriceUSD, aaplPriceDate } from './data.js';
 
 // Approximate fallback rates — updated manually every few months
 const FALLBACK_FX = { USD: 1, CAD: 1.44, GBP: 0.79, AUD: 1.62 };
-
-/**
- * Fetch AAPL last-close price.
- * @returns {{ priceUSD: number, dateStr: string }}
- */
-async function fetchAaplPrice() {
-    const url = 'https://query1.finance.yahoo.com/v8/finance/chart/AAPL?interval=1d&range=5d';
-    const res  = await fetch(url);
-
-    if (!res.ok) throw new Error(`Yahoo Finance responded ${res.status}`);
-
-    const json = await res.json();
-    const meta = json.chart.result[0].meta;
-    const price = meta.chartPreviousClose ?? meta.regularMarketPrice;
-    const dateStr = new Date(meta.regularMarketTime * 1000).toLocaleDateString(
-        'en-CA',
-        { year: 'numeric', month: 'short', day: 'numeric' }
-    );
-
-    return { priceUSD: parseFloat(price.toFixed(2)), dateStr };
-}
 
 /**
  * Fetch current USD → CAD/GBP/AUD rates from Frankfurter (ECB data).
@@ -47,13 +24,13 @@ async function fetchFxRates() {
     if (!res.ok) throw new Error(`Frankfurter responded ${res.status}`);
 
     const json = await res.json();
-
     return { USD: 1, CAD: json.rates.CAD, GBP: json.rates.GBP, AUD: json.rates.AUD };
 }
 
 /**
- * Initialise live data. Runs both fetches in parallel and returns
- * whichever values succeed; falls back gracefully on failure.
+ * Initialise live data.
+ * AAPL price comes from PHP-injected APP_DATA (server-side fetch, no CORS).
+ * FX rates are fetched client-side from Frankfurter with fallback on failure.
  *
  * @returns {Promise<{
  *   aaplPriceUSD:  number,
@@ -63,21 +40,19 @@ async function fetchFxRates() {
  * }>}
  */
 export async function initialise() {
-    const [aaplResult, fxResult] = await Promise.allSettled([
-        fetchAaplPrice(),
-        fetchFxRates(),
-    ]);
+    let fxRates  = FALLBACK_FX;
+    let fxSource = 'cached';
 
-    const aapl = aaplResult.status === 'fulfilled'
-        ? aaplResult.value
-        : { priceUSD: FALLBACK_AAPL_USD, dateStr: FALLBACK_AAPL_DATE };
-
-    const fxRates  = fxResult.status === 'fulfilled' ? fxResult.value : FALLBACK_FX;
-    const fxSource = fxResult.status === 'fulfilled' ? 'live' : 'cached';
+    try {
+        fxRates  = await fetchFxRates();
+        fxSource = 'live';
+    } catch {
+        // Silent fallback — user sees "(cached rate)" note in UI
+    }
 
     return {
-        aaplPriceUSD:  aapl.priceUSD,
-        aaplPriceDate: aapl.dateStr,
+        aaplPriceUSD,
+        aaplPriceDate,
         fxRates,
         fxSource,
     };
