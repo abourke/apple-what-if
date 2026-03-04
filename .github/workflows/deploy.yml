@@ -17,5 +17,5 @@ jobs:
           host: ${{ secrets.SFTP_HOST }}
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          local_path: ./
-          remote_path: andrewbourke.info/httpdocs/fun/awi/
+          localDir: ./
+          remoteDir: andrewbourke.info/httpdocs/fun/awi/
