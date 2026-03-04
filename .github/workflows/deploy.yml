@@ -1,0 +1,21 @@
+name: Deploy to Host
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy via SFTP
+        uses: pressable/github-action-sftp-upload@v1
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          local_path: ./
+          remote_path: andrewbourke.info/httpdocs/fun/awi/
