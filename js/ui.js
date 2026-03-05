@@ -316,18 +316,19 @@ function renderLuxuries(valueLocal, currency, fxNow, sym) {
 
         const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(item.name + ' price')}`;
 
-        const card = document.createElement('a');
+        const card = document.createElement('div');
         card.className = 'luxury-card';
-        card.href      = searchUrl;
-        card.target    = '_blank';
-        card.rel       = 'noopener noreferrer';
         card.setAttribute('role', 'listitem');
         card.setAttribute('aria-label',
-            `${countDisplay.replace('×', '')} ${item.name} at ${fmt(item.localPrice, sym)} each — search Google for current price`);
+            `${countDisplay.replace('×', '')} ${item.name} at ${fmt(item.localPrice, sym)} each`);
         card.innerHTML = `
             <span class="luxury-emoji" aria-hidden="true">${item.emoji}</span>
             <div class="luxury-count" aria-hidden="true">${countDisplay}</div>
-            <div class="luxury-item">${item.name}</div>
+            <div class="luxury-item">
+                <a href="${searchUrl}" target="_blank" rel="noopener noreferrer"
+                   aria-label="Search Google for ${item.name} price"
+                   onclick="event.stopPropagation()">${item.name}</a>
+            </div>
             <div class="luxury-price">${fmt(item.localPrice, sym)} each</div>
         `;
         grid.appendChild(card);
