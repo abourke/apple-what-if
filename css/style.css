@@ -449,6 +449,21 @@ h1 em {
     color: #4caf84;
 }
 
+/* ── Explainer paragraph ──────────────────────────────────────────────────── */
+.explainer {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.75;
+    padding: 22px 0 26px;
+    border-top: 1px solid var(--border);
+    max-width: 680px;
+}
+
+.explainer strong {
+    color: var(--white);
+    font-weight: 500;
+}
+
 /* ── Luxuries ─────────────────────────────────────────────────────────────── */
 .luxuries-label {
     font-family: 'DM Mono', monospace;
@@ -478,6 +493,24 @@ h1 em {
 
 .luxury-card:hover {
     background: rgba(201, 168, 76, 0.05);
+}
+
+/* Card as a link */
+a.luxury-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.luxury-card:hover {
+    background: rgba(201, 168, 76, 0.08);
+}
+
+a.luxury-card:hover .luxury-item {
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .luxury-emoji {

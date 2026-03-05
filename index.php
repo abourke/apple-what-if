@@ -142,6 +142,8 @@ $app_data_json = json_encode([
             </div>
         </div>
 
+        <p class="explainer" id="explainer"></p>
+
         <div class="luxuries-label" aria-hidden="true">— Instead, you could have bought…</div>
         <div class="luxuries-grid" id="luxuries-grid" role="list" aria-label="What you could buy instead — luxury and everyday items"></div>
 

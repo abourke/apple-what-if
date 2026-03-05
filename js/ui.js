@@ -205,6 +205,9 @@ export function renderResult(result) {
     // Luxuries
     renderLuxuries(valueLocal, currency, fxNow, sym);
 
+    // Explainer
+    renderExplainer(result);
+
     // Disclaimer
     renderDisclaimer({ result, sym, fxNow });
 
@@ -212,6 +215,37 @@ export function renderResult(result) {
     const panel = document.getElementById('result');
     panel.style.display = 'block';
     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Explainer ─────────────────────────────────────────────────────────────────
+
+/**
+ * Render a short plain-English paragraph explaining why the number is so large.
+ * Uses the actual calculation values so it's always accurate per result.
+ */
+function renderExplainer(result) {
+    const {
+        year, productName, splitMult, sharesAfterSplits,
+        extraShares, sharesNow, returnPct, divBoostPct,
+    } = result;
+
+    const yearsHeld  = new Date().getFullYear() - year;
+    const splitYears = splitMult > 1
+        ? `Apple split its stock ${Math.round(Math.log2(splitMult))} times since ${year}, turning every share into ${splitMult.toLocaleString()} — so your ${sharesAfterSplits.toFixed(1)} split-adjusted shares reflect that compounding.`
+        : `No further splits have occurred since ${year}.`;
+
+    const dripNote = extraShares > 0
+        ? ` Apple's quarterly dividends — paid from 1987–1994 and again from 2012 onward — were reinvested each quarter to buy more shares, adding roughly ${Math.round(extraShares)} extra shares (${divBoostPct.toFixed(1)}% on top of the split gains).`
+        : '';
+
+    const growthNote = returnPct >= 10000
+        ? `That's a return of over ${Math.round(returnPct / 1000).toLocaleString()},000% — the kind of growth that only compounds over ${yearsHeld} years of holding through crashes, booms, and everything in between.`
+        : `That's a ${Math.round(returnPct).toLocaleString()}% return over ${yearsHeld} years.`;
+
+    document.getElementById('explainer').innerHTML =
+        `<strong>How is this possible?</strong> When you bought the ${productName} in ${year}, ` +
+        `AAPL was a fraction of today's price. ${splitYears}${dripNote} ${growthNote} ` +
+        `The number isn't a trick — it's what patient, uninterrupted compounding actually looks like.`;
 }
 
 // ── Luxuries + everyday items ─────────────────────────────────────────────────
@@ -273,8 +307,6 @@ function renderLuxuries(valueLocal, currency, fxNow, sym) {
 
     pool.forEach(item => {
         const rawCount = valueLocal / item.localPrice;
-        // Format count: show one decimal for fractional, integer for whole numbers
-        // Never show a < symbol — show the actual fraction instead
         let countDisplay;
         if (rawCount >= 1) {
             countDisplay = Math.floor(rawCount).toLocaleString() + '×';
@@ -282,11 +314,16 @@ function renderLuxuries(valueLocal, currency, fxNow, sym) {
             countDisplay = rawCount.toFixed(2) + '×';
         }
 
-        const card = document.createElement('div');
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(item.name + ' price')}`;
+
+        const card = document.createElement('a');
         card.className = 'luxury-card';
+        card.href      = searchUrl;
+        card.target    = '_blank';
+        card.rel       = 'noopener noreferrer';
         card.setAttribute('role', 'listitem');
         card.setAttribute('aria-label',
-            `${countDisplay.replace('×', '')} ${item.name} at ${fmt(item.localPrice, sym)} each`);
+            `${countDisplay.replace('×', '')} ${item.name} at ${fmt(item.localPrice, sym)} each — search Google for current price`);
         card.innerHTML = `
             <span class="luxury-emoji" aria-hidden="true">${item.emoji}</span>
             <div class="luxury-count" aria-hidden="true">${countDisplay}</div>
