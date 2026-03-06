@@ -1,2 +1,5 @@
 # Cache directory (created at runtime by includes/aapl.php)
 cache/
+
+/vendor/
+.DS_Store

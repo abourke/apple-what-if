@@ -1,0 +1,15 @@
+{
+    "name": "bourkeaj/apple-what-if",
+    "description": "AAPL opportunity cost calculator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew",
+            "email": "12345678+abourke@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.10",
+        "symfony/cache": "^8.0"
+    }
+}
