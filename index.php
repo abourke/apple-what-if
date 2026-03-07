@@ -46,6 +46,15 @@ $app_data_json = json_encode([
     <!-- Data bridge: PHP → JS (must precede module scripts) -->
     <script>window.APP_DATA = <?= $app_data_json ?>;</script>
 </head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ERR5GR8ZS9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ERR5GR8ZS9');
+</script>
 <body>
 <div class="container">
 
